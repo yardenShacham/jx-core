@@ -7,7 +7,7 @@ const pkg = require('./package.json');
 const typescript = require('rollup-plugin-typescript');
 const uglify = require('rollup-plugin-uglify');
 const minify = require('uglify-es').minify;
-
+const fsExtra = require('fs-extra');
 
 // Clean up the output directory
 // Compile source code into a distributable format with Babel
@@ -30,7 +30,7 @@ Promise.resolve().then(() => del(['dist/*']))
         delete pkg.devDependencies;
         delete pkg.scripts;
         delete pkg.babel;
-        fs.writeFileSync('dist/index.ts', fs.readFileSync('src/injector.ts', 'utf-8'), 'utf-8');
+        fsExtra.copySync('src', 'dist/src');
         fs.writeFileSync('dist/package.json', JSON.stringify(pkg, null, '  '), 'utf-8');
         fs.writeFileSync('dist/LICENSE', fs.readFileSync('LICENSE', 'utf-8'), 'utf-8');
     }).catch(err => console.error(err.stack))));
