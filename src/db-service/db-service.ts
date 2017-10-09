@@ -1,10 +1,10 @@
-const db = require('firebase/database');
+const firebase = require('firebase');
 
 export class dbService {
     fireDbService: any
 
     constructor() {
-        this.fireDbService = db();
+        this.fireDbService = firebase.database();
     }
 
     getByPath(path: string) {

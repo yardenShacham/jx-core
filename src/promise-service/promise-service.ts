@@ -1,17 +1,10 @@
-interface resolveFunction {
-
-}
-interface rejectFunction {
-
-}
-
 export class Deferred {
-    promise: Promise
-    resolve: resolveFunction
-    reject: rejectFunction
+    promise: Promise<any>
+    resolve: any
+    reject: any
 
     constructor() {
-        this.promise = new Promise((resolve: resolveFunction, reject: rejectFunction) => {
+        this.promise = new Promise((resolve: any, reject: any) => {
             this.reject = reject;
             this.resolve = resolve;
         })

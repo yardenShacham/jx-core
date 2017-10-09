@@ -1,15 +1,12 @@
-import {appConfiguration} from '../app.config';
-const firebase = require('firebase/app');
-const auth = require("firebase/auth");
+const auth = require("firebase").auth;
+import {Deferred} from '../promise-service/promise-service'
 
 export class authService {
-    signInDeferred: any
-    signOutDeferred: any
+    signInDeferred: Deferred = new Deferred();
+    signOutDeferred: Deferred = new Deferred();
     tokens: any
 
     constructor() {
-        (<any>firebase).initializeApp(appConfiguration.firebase);
-
         auth().onAuthStateChanged((user: any) => user ? this.onUserSignIn(user) : this.onUserSignOut());
     }
 
@@ -25,7 +22,7 @@ export class authService {
     }
 
     signIn(email: string, password: string) {
-        auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+        auth().signInWithEmailAndPassword(email, password).catch(function (error: any) {
             console.log(error);
             return error;
         });
@@ -57,7 +54,7 @@ export class authService {
             });
         }
         else {
-            firebase.auth().getRedirectResult().then(function (result: any) {
+            auth().getRedirectResult().then(function (result: any) {
                 if (result.credential) {
                     this.tokens[providerName] = result.credential.accessToken;
                 }
@@ -76,11 +73,15 @@ export class authService {
     }
 
     signOut() {
-        firebase.auth().signOut().then(function () {
+        auth().signOut().then(function () {
             // Sign-out successful.
         }).catch(function (error: any) {
             // An error happened.
         });
+    }
+
+    getCurrentUser() {
+        return auth.currentUser;
     }
 
     onUserSignIn(user: any) {
@@ -92,12 +93,10 @@ export class authService {
         let isAnonymous = user.isAnonymous;
         let uid = user.uid;
         let providerData = user.providerData;
-        this.signInDeferred(user);
+        this.signInDeferred.resolve(user);
     }
 
     onUserSignOut() {
-        this.signOutDeferred();
+        this.signOutDeferred.resolve();
     }
-
-
 }
