@@ -2,8 +2,7 @@ const auth = require("firebase").auth;
 import {Deferred} from '../promise-service/promise-service'
 
 export class authService {
-    signInDeferred: Deferred = new Deferred();
-    signOutDeferred: Deferred = new Deferred();
+    signInDeferred: Deferred = new Deferred()
     tokens: any
 
     constructor() {
@@ -22,9 +21,10 @@ export class authService {
     }
 
     signIn(email: string, password: string) {
-        auth().signInWithEmailAndPassword(email, password).catch(function (error: any) {
-            console.log(error);
-            return error;
+        this.signInDeferred = new Deferred();
+        auth().signInWithEmailAndPassword(email, password).catch((error: any) => {
+            this.signInDeferred.reject(error);
+            this.signInDeferred = undefined;
         });
         return this.signInDeferred.promise;
     }
@@ -73,30 +73,42 @@ export class authService {
     }
 
     signOut() {
-        auth().signOut().then(function () {
-            // Sign-out successful.
-        }).catch(function (error: any) {
-            // An error happened.
-        });
+        return auth().signOut();
     }
 
     getCurrentUser() {
-        return auth.currentUser;
+        return auth().currentUser;
     }
 
-    onUserSignIn(user: any) {
-        // get details
-        let displayName = user.displayName;
-        let email = user.email;
-        let emailVerified = user.emailVerified;
-        let photoURL = user.photoURL;
-        let isAnonymous = user.isAnonymous;
-        let uid = user.uid;
-        let providerData = user.providerData;
-        this.signInDeferred.resolve(user);
+    isAuthenticated() {
+        return localStorage.getItem("logedIn");
+    }
+
+    waitForCurrentUser() {
+        if (!this.signInDeferred)
+            return Promise.resolve(auth().currentUser);
+
+        return this.signInDeferred.promise;
     }
 
     onUserSignOut() {
-        this.signOutDeferred.resolve();
+        this.signInDeferred = undefined;
     }
+
+    onUserSignIn(user: any) {
+        if (this.signInDeferred) {
+            // get details
+            let displayName = user.displayName;
+            let email = user.email;
+            let emailVerified = user.emailVerified;
+            let photoURL = user.photoURL;
+            let isAnonymous = user.isAnonymous;
+            let uid = user.uid;
+            let providerData = user.providerData;
+            localStorage.setItem("logedIn", user);
+            this.signInDeferred.resolve(user);
+            this.signInDeferred = undefined;
+        }
+    }
+
 }

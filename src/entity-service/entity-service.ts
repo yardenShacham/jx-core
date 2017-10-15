@@ -11,12 +11,12 @@ export class entityService {
     }
 
     generateBasePath() {
-        let currentUserId = 1;
-        return `${this.appName}/users/${currentUserId}`;
+        return this.appName;
     }
-
-    getEnteties() {
-        return this.db.getByPath(`${this.basePath}/entities/allEntities`);
+    getEnteties(currentUserId: any) {
+        return this.db.getByPath(`${this.basePath}/users/${currentUserId}/entities/allEntities`).then((snap) => {
+            return snap.val();
+        });
     }
 
     createEntity() {
