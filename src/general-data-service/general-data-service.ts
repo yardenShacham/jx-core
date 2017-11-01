@@ -5,13 +5,14 @@ export class generalDataService {
     dbPathService: any
     baseAppPath: string
 
-    constructor(dbService?: any, dbPathService?: any) {
-        this.db = dbService ? dbService : new dbService();
-        this.dbPathService = dbPathService ? dbPathService : new dbPathService("jxAdmin");
+    constructor(dbSer?: any, dbPathSer?: any) {
+        this.db = dbSer ? dbSer : new dbService();
+        this.dbPathService = dbPathSer ? dbPathSer : new dbPathService("jxAdmin");
         this.baseAppPath = this.dbPathService.generateBasePath();
     }
 
     getInputTypeEnums() {
-        return this.db.getByPath(`${this.baseAppPath}/inputTypes`);
+        return this.db.getByPath(`${this.baseAppPath}/inputTypes`)
+            .then((snap: any) => snap.val());
     }
 }

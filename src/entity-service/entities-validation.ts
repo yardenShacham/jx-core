@@ -5,7 +5,7 @@ export class EntitiesValidation {
     db: any
     dbPathService: any
 
-    constructor(private currentConnectedUser: any) {
+    constructor() {
         this.db = new dbService();
         this.dbPathService = new dbPathService("jxAdmin");
     }

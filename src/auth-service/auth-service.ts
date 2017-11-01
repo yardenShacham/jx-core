@@ -1,11 +1,14 @@
 const auth = require("firebase").auth;
-import {Deferred} from '../promise-service/promise-service'
+import {Deferred} from '../promise-service/promise-service';
+import {lifeStyleMethods} from './lifeStyleMethods';
 
 export class authService {
     signInDeferred: Deferred = new Deferred()
     tokens: any
+    lifeStyleCallbacks: any
 
-    constructor() {
+    constructor(lifeStyleCallbacks: any) {
+        this.lifeStyleCallbacks = lifeStyleCallbacks ? lifeStyleCallbacks : {};
         auth().onAuthStateChanged((user: any) => user ? this.onUserSignIn(user) : this.onUserSignOut());
     }
 
@@ -72,6 +75,19 @@ export class authService {
         }
     }
 
+    addLifeStyleCallback(lifeName: string, callback: any) {
+        let isLifeNameExist = false;
+        let keys = Object.keys(lifeStyleMethods);
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i] === lifeName) {
+                isLifeNameExist = true;
+                break;
+            }
+        }
+        if (isLifeNameExist)
+            this.lifeStyleCallbacks[lifeName] = callback;
+    }
+
     signOut() {
         return auth().signOut();
     }
@@ -85,14 +101,23 @@ export class authService {
     }
 
     waitForCurrentUser() {
-        if (!this.signInDeferred)
-            return Promise.resolve(auth().currentUser);
+        let isAuthenticated = this.isAuthenticated();
+        if (!isAuthenticated)
+            return Promise.reject('user loged out');
+        else {
+            if (!this.signInDeferred)
+                return Promise.resolve(auth().currentUser);
 
-        return this.signInDeferred.promise;
+            return this.signInDeferred.promise;
+        }
     }
 
     onUserSignOut() {
         this.signInDeferred = undefined;
+        localStorage.removeItem("logedIn");
+        this.lifeStyleCallbacks[lifeStyleMethods.onSignOut] &&
+        typeof this.lifeStyleCallbacks[lifeStyleMethods.onSignOut] === "function" ?
+            this.lifeStyleCallbacks[lifeStyleMethods.onSignOut]() : null;
     }
 
     onUserSignIn(user: any) {
@@ -105,10 +130,12 @@ export class authService {
             let isAnonymous = user.isAnonymous;
             let uid = user.uid;
             let providerData = user.providerData;
-            localStorage.setItem("logedIn", user);
+            localStorage.setItem("logedIn", JSON.stringify(user));
             this.signInDeferred.resolve(user);
             this.signInDeferred = undefined;
+            this.lifeStyleCallbacks[lifeStyleMethods.onSignIn] &&
+            typeof this.lifeStyleCallbacks[lifeStyleMethods.onSignIn] === "function" ?
+                this.lifeStyleCallbacks[lifeStyleMethods.onSignIn](user) : null;
         }
     }
-
 }

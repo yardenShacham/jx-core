@@ -1,90 +1,32 @@
 {
-  "jxAdmin": {
-    "inputTypes": {
-      "text": 1,
-      "number": 2,
-      "checkbox": 3,
-      "password": 4,
-      "radio": 5,
-      "file": 6,
-      "date": 7,
-      "time": 8,
-      "daysOfWeek": 9,
-      "subEntity": 10
+  "jxAdmin" : {
+    "inputTypes" : {
+      "checkbox" : 3,
+      "date" : 7,
+      "daysOfWeek" : 9,
+      "file" : 6,
+      "number" : 2,
+      "password" : 4,
+      "radio" : 5,
+      "subEntity" : 10,
+      "text" : 1,
+      "time" : 8
     },
-    "users": {
-      "38vbwKv0jHdCCxpl2LXvizL2Leb2": {
-        "details": {
-          "firstName": "yarden",
-          "lastName": "shacham",
-          "phoneNumber": "0558465894"
-        },
-        "entities": {
-          "allEntities": {
-            "Users1": {
-              "name": "Users",
-              "fields": [
-                1,
-                2,
-                5
-              ]
+    "users" : {
+      "38vbwKv0jHdCCxpl2LXvizL2Leb2" : {
+        "entities" : {
+          "allEntities" : {
+            "Users1" : {
+              "fields" : [ ],
+              "name" : "Users"
             }
           }
         },
-        "usedInputs": [
-          {
-            "inputId": 1,
-            "inputType": 1,
-            "validationRulls": []
-          },
-          {
-            "inputId": 2,
-            "inputType": 2,
-            "validationRulls": []
-          },
-          {
-            "inputId": 3,
-            "inputType": 10,
-            "subEntityField": {
-              "fields": [
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "usedFields": [
-          {
-            "fieldId": 1,
-            "inputId": 1,
-            "name": "First Name"
-          },
-          {
-            "fieldId": 2,
-            "inputId": 1,
-            "name": "Last Name"
-          },
-          {
-            "fieldId": 3,
-            "inputId": 1,
-            "name": "City"
-          },
-          {
-            "fieldId": 4,
-            "inputId": 2,
-            "name": "Post Code"
-          },
-          {
-            "fieldId": 5,
-            "inputId": 3,
-            "name": "Location"
-          }
-        ]
+        "usedFields" : {
+		},
+        "usedInputs" : {
+		}
       }
     }
-  },
-  "jxClient": {
-  },
-  "jxMobile": {
   }
 }
