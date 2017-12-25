@@ -1,4 +1,4 @@
-import {dbService, dbPathService} from '../db-service';
+import {appInjector} from '../app.dependencies.register';
 
 export class viewService {
     db: any
@@ -6,8 +6,8 @@ export class viewService {
     currentConnectedUser: any
 
     constructor() {
-        this.db = new dbService();
-        this.dbPathService = new dbPathService("jxAdmin");
+        this.db = appInjector.get('dbService');
+        this.dbPathService = appInjector.get('dbPathService').init('jxAdmin');
     }
 
     initConnetedUser(currentConnectedUser: any) {
@@ -21,13 +21,13 @@ export class viewService {
             this.db.getByPath(`${basePath}/views`).then((snap: any) => snap.val()) : null;
     }
 
-    getViewById(id: any) {
+    getViewById(id: string) {
         let basePath = this.getBasePath();
         return basePath ?
             this.db.getByPath(`${basePath}/views/${id}`).then((snap: any) => snap.val()) : null;
     }
 
-    createView(name: string, relatedEnitities: any[]) {
+    createView(name: string, relatedEnitities: string[]) {
         if (name && relatedEnitities && relatedEnitities.length && relatedEnitities.length > 0) {
             let basePath = this.getBasePath();
             return basePath ?
@@ -40,20 +40,24 @@ export class viewService {
         return Promise.reject("name or related entities does not exist!!!");
     }
 
-    changeViewName(viewId: any, viewName: string) {
+    changeViewName(viewId: string, viewName: string) {
         let basePath = this.getBasePath();
         return basePath ?
             this.db.updateProp(`${basePath}/views/${viewId}/name`, viewName) : null;
     }
 
-    isBackgroundExist(fileId: any) {
+    setBackground(fileId: string) {
+
+    }
+
+    isBackgroundExist(fileId: string) {
         let basePath = this.getBasePath();
         return basePath ?
             this.db.getByPath(`${basePath}/files/${fileId}`)
                 .then((snap: any) => !!snap.val()) : false;
     }
 
-    removeView(viewId: any) {
+    removeView(viewId: string) {
         let basePath = this.getBasePath();
 
         return basePath ? this.db.remove(`${basePath}/views/${viewId}`) : null;

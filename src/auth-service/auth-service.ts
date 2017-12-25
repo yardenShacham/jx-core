@@ -1,5 +1,5 @@
 const auth = require("firebase").auth;
-import {Deferred} from '../promise-service/promise-service';
+import {Deferred} from '../promise-helper/Deferred';
 import {lifeStyleMethods} from './lifeStyleMethods';
 
 export class authService {

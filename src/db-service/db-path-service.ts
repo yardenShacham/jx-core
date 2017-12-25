@@ -1,11 +1,16 @@
+import {appInjector} from '../app.dependencies.register';
+
 export class dbPathService {
+    appName: string
 
-    constructor(private appName: string) {
-
+    init(appName: string) {
+        this.appName = this.appName;
+        return this;
     }
 
-    generateBasePathByUser(currentUserId: any) {
-        return `${this.appName}/users/${currentUserId}`;
+    generateBasePathByUser() {
+        let currentUser = appInjector.get('authService').getCurrentUser();
+        return currentUser ? `${this.appName}/users/${currentUser.uid}` : null;
     }
 
     generateBasePath() {

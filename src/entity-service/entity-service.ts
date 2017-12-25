@@ -1,6 +1,5 @@
-import {dbService, dbPathService} from '../db-service';
+import {appInjector} from '../app.dependencies.register';
 import {isString} from 'lodash';
-import {generalDataService} from '../general-data-service';
 import {EntitiesValidation} from './entities-validation';
 
 export class entityService {
@@ -9,21 +8,18 @@ export class entityService {
     entityValidationService: any
     generalDataService: any
     inputTypeEnum: any
-    currentConnectedUser: any
 
     constructor() {
-        this.db = new dbService();
-        this.dbPathService = new dbPathService("jxAdmin");
-        this.entityValidationService = new EntitiesValidation();
-        this.generalDataService = new generalDataService(this.db, this.dbPathService);
+        this.dbPathService = appInjector.get('dbPathService').init('jxAdmin');
+        this.db = appInjector.get('dbService');
+        this.entityValidationService = appInjector.get('entitiesValidationService');
+        new EntitiesValidation();
+        this.generalDataService = appInjector.get('generalDataService');
     }
 
-    initConnetedUser(currentConnectedUser: any) {
-        this.currentConnectedUser = currentConnectedUser;
-    }
 
     getUsedInputs() {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ? this.db.getByPath(`${basePath}/usedInputs`).then((snap: any) => snap.val()) : null;
     }
 
@@ -40,18 +36,18 @@ export class entityService {
     }
 
     getUsedFields() {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ? this.db.getByPath(`${basePath}/usedFields`).then((snap: any) => snap.val()) : null;
     }
 
     getEnteties() {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
             this.db.getByPath(`${basePath}/entities/allEntities`).then((snap: any) => snap.val()) : null;
     }
 
     getEntityById(id: any) {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         if (!basePath)
             return Promise.resolve(null);
 
@@ -81,13 +77,13 @@ export class entityService {
     }
 
     createEntity(entity: any) {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
             this.db.updateCollection(`${basePath}/entities/allEntities`, [entity]) : null;
     }
 
     createNewUserInput(inputType: any, description: string) {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return this.db.updateCollection([{
             inputType,
             description
@@ -95,13 +91,13 @@ export class entityService {
     }
 
     updateEntity(entityId: any, entityInfo: any) {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
             this.db.updateProp(`${basePath}/entities/allEntities/${entityId}/name`, entityInfo.name) : null;
     }
 
     removeEntity(entityId: any) {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         if (!basePath)
             return null;
 
@@ -121,15 +117,15 @@ export class entityService {
         return Promise.all(tasks);
     }
 
-    removeEntiyWithoutFields(entityId: any, currentConnectedUser?: any) {
-        let basePath = this.getBasePath();
+    removeEntiyWithoutFields(entityId: any) {
+        let basePath = this.dbPathService.generateBasePathByUser();
 
         return basePath ? this.db.remove(`${basePath}/entities/allEntities/${entityId}`) : null;
     }
 
     addNewField(entityId: any, fieldName: string, inputType: any) {
         let ref = this.getBaseRef();
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         if (!ref || !basePath)
             return null;
 
@@ -151,16 +147,17 @@ export class entityService {
         });
     }
 
-    addNewUsedInput(inputType: any, ref: any, usedInputPsth: string) {
+    addNewUsedInput(inputType: any, ref: any, usedInputPath: string) {
         let usedInputsRef = ref.child('usedInputs');
-        return usedInputsRef.orderByChild('inputType').equalTo(inputType).once('value').then((snap: any) => {
-            let value = snap.val();
-            if (!value) {
-                return this.db.updateCollection(usedInputPsth, [{
-                    inputType: inputType
-                }], usedInputsRef);
-            }
-        });
+        return usedInputsRef.orderByChild('inputType').equalTo(inputType).once('value')
+            .then((snap: any) => {
+                let value = snap.val();
+                if (!value) {
+                    return this.db.updateCollection(usedInputPath, [{
+                        inputType: inputType
+                    }], usedInputsRef);
+                }
+            });
     }
 
     addNewUsedField(inputId: any, name: string, basePath: string) {
@@ -180,12 +177,7 @@ export class entityService {
     }
 
     getBaseRef() {
-        let basePath = this.getBasePath();
+        let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ? this.dbPathService.getDbManager().ref(basePath) : null;
-    }
-
-    getBasePath() {
-        return this.currentConnectedUser ?
-            this.dbPathService.generateBasePathByUser(this.currentConnectedUser.uid) : null;
     }
 }

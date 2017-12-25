@@ -1,7 +1,10 @@
 import {appConfiguration} from './app.config';
 
 const firebase = require('firebase/app');
-(<any>firebase).initializeApp(appConfiguration.firebase);
+import {registerDependencies} from './app.dependencies.register';
 
-export {entityService} from './entity-service';
-export {authService} from './auth-service';
+export default function () {
+    (<any>firebase).initializeApp(appConfiguration.firebase);
+
+    return registerDependencies();
+}

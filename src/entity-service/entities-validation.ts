@@ -1,4 +1,4 @@
-import {dbService, dbPathService} from '../db-service';
+import {appInjector} from '../app.dependencies.register';
 
 export class EntitiesValidation {
 
@@ -6,8 +6,8 @@ export class EntitiesValidation {
     dbPathService: any
 
     constructor() {
-        this.db = new dbService();
-        this.dbPathService = new dbPathService("jxAdmin");
+        this.dbPathService = appInjector.get('dbPathService').init('jxAdmin');
+        this.db = appInjector.get('dbService');
     }
 
     public isUsedFieldValid(inputId: any, name: string, currentConnectedUser: any) {
