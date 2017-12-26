@@ -1,11 +1,10 @@
 {
   "name": "jx-core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "jx core system",
   "author": "Yarden Shacham <yarden101111@gmail.com>",
   "license": "MIT",
   "main": "bundle.js",
-  "jsnext:main": "jx-core.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/yardenShacham/jx-core.git"
