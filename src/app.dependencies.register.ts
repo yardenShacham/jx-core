@@ -4,6 +4,8 @@ import {dbPathService, dbService} from './db-service';
 import {HttpClient} from './http-client';
 import {generalDataService} from './general-data-service';
 import {EntitiesValidation, entityService} from './entity-service';
+import {viewService} from './viewService';
+
 import {fileService, backgroundService} from './files';
 
 export const appInjector = new injector();
@@ -20,6 +22,7 @@ export function registerDependencies() {
             appInjector.registerSingleton("entityService", entityService);
             appInjector.registerSingleton("fileService", fileService);
             appInjector.registerSingleton("backgroundService", backgroundService);
+            appInjector.registerSingleton("viewService", viewService);
             resolve(appInjector);
         }
         else {

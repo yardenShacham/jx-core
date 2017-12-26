@@ -1,0 +1,1 @@
+export {viewService} from './viewService';
