@@ -7,7 +7,7 @@ export class generalDataService {
 
     constructor(dbSer: any, dbPathSer: any) {
         this.db = appInjector.get('dbService');
-        this.dbPathService = appInjector.get('dbService').init("jxAdmin");
+        this.dbPathService = appInjector.get('dbPathService').init("jxAdmin");
         this.baseAppPath = this.dbPathService.generateBasePath();
     }
 

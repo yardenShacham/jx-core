@@ -7,7 +7,7 @@ export class fileService {
 
     constructor() {
         this.db = appInjector.get('dbService');
-        this.dbPathService = appInjector.get('dbService').init("jxAdmin");
+        this.dbPathService = appInjector.get('dbPathService').init("jxAdmin");
     }
 
     uploadFile(file: File, folder?: string) {
