@@ -1,6 +1,6 @@
 {
   "name": "jx-core",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "jx core system",
   "author": "Yarden Shacham <yarden101111@gmail.com>",
   "license": "MIT",
@@ -18,8 +18,8 @@
     "prod": "node rollup-build.js"
   },
   "dependencies": {
-    "jx-injector": "^1.0.8",
-    "firebase": "^4.8.1"
+    "jx-injector": "1.0.8",
+    "firebase": "4.5.0"
   },
   "devDependencies": {
     "@types/firebase": "^2.4.32",
