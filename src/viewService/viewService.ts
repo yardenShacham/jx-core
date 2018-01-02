@@ -25,11 +25,11 @@ export class viewService {
         if (name && relatedEnitities && relatedEnitities.length && relatedEnitities.length > 0) {
             let basePath = this.dbPathService.generateBasePathByUser();
             return basePath ?
-                this.db.updateCollection(`${basePath}/views`, [{
+                this.db.updateCollection([{
                     name,
                     relatedEnitities,
                     content: {}
-                }]) : Promise.resolve(null);
+                }], `${basePath}/views`) : Promise.resolve(null);
         }
         return Promise.reject("name or related entities does not exist!!!");
     }

@@ -4,7 +4,7 @@ export class dbPathService {
     appName: string
 
     init(appName: string) {
-        this.appName = this.appName;
+        this.appName = appName;
         return this;
     }
 
