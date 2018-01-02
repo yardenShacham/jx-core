@@ -12,13 +12,13 @@ export class viewService {
     getViews() {
         let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
-            this.db.getByPath(`${basePath}/views`).then((snap: any) => snap.val()) : null;
+            this.db.getByPath(`${basePath}/views`).then((snap: any) => snap.val()) : Promise.resolve(null);
     }
 
     getViewById(id: string) {
         let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
-            this.db.getByPath(`${basePath}/views/${id}`).then((snap: any) => snap.val()) : null;
+            this.db.getByPath(`${basePath}/views/${id}`).then((snap: any) => snap.val()) : Promise.resolve(null);
     }
 
     createView(name: string, relatedEnitities: string[]) {
@@ -29,7 +29,7 @@ export class viewService {
                     name,
                     relatedEnitities,
                     content: {}
-                }]) : null;
+                }]) : Promise.resolve(null);
         }
         return Promise.reject("name or related entities does not exist!!!");
     }
@@ -37,7 +37,7 @@ export class viewService {
     changeViewName(viewId: string, viewName: string) {
         let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
-            this.db.updateProp(`${basePath}/views/${viewId}/name`, viewName) : null;
+            this.db.updateProp(`${basePath}/views/${viewId}/name`, viewName) : Promise.resolve(null);
     }
 
     setBackground(fileId: string) {
@@ -48,7 +48,7 @@ export class viewService {
         let basePath = this.dbPathService.generateBasePathByUser();
         return basePath ?
             this.db.getByPath(`${basePath}/files/${fileId}`)
-                .then((snap: any) => !!snap.val()) : false;
+                .then((snap: any) => !!snap.val()) : Promise.resolve(null);
     }
 
     removeView(viewId: string) {
